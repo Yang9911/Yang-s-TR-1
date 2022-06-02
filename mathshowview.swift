@@ -13,7 +13,7 @@ struct mathshowview: View {
     @State var btn = "送出答案"
     @State var res = ""
     @State var anst = ""
-    @State var ansc = ["","63","912","tea","90","76","eight"]
+    @State var ansc = ["","63","912","ten","90","76","eight"]
     var body: some View {
         ScrollView{
             VStack{
@@ -27,38 +27,38 @@ struct mathshowview: View {
                     Image("R\(mathnum)a").resizable().scaledToFill()
                     Image("R\(mathnum)").resizable().scaledToFill()
                     
-                        //輸入答案
+                    //輸入答案
                     TextField("這裡輸入答案", text: $anst).foregroundColor(.red).background(.gray).font(.title).padding()
-                        //檢查答案
+                    //檢查答案
                     Button{
-                            anst = String.lowercased(anst)()
+                        anst = String.lowercased(anst)()
+                        
+                        if ansc[mathnum] == anst {
+                            mathnum += 1
                             
-                            if ansc[mathnum] == anst {
-                                mathnum += 1
-                                
-                                if mathnum > 6{
+                            if mathnum > 6{
                                 btn = ""
                                 res = "答對了，恭喜通過最後一關"
-                                } else {
+                            } else {
                                 res = "答對了，請繼續前往下一關"
-                                }
-                                
-                                anst = ""
-                            }else {
-                                res = "答案不對，再想想看！"
-                                anst = ""
                             }
+                            
+                            anst = ""
+                        }else {
+                            res = "答案不對，再想想看！"
+                            anst = ""
+                        }
                         //顯示訊息匡
                         ispresented = true
-                        }label: {
-                            Text(btn)
-                        }.font(.title)
-                            .background(Color(.white)).foregroundColor(.blue).cornerRadius(20)
+                    }label: {
+                        Text(btn)
+                    }.font(.title)
+                        .background(Color(.white)).foregroundColor(.blue).cornerRadius(20)
                 }
-                    //返回
-                    Text("按這裡返回").font(.title).padding(.horizontal,6).padding(.vertical,3).foregroundColor(.blue).background(Color(.white)).cornerRadius(20).onTapGesture {
-                        ismathshow = false
-                        }
+                //返回
+                Text("按這裡返回").font(.title).padding(.horizontal,6).padding(.vertical,3).foregroundColor(.blue).background(Color(.white)).cornerRadius(20).onTapGesture {
+                    ismathshow = false
+                }
                 }
         }.alert(isPresented: $ispresented){
             Alert(

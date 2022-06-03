@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
-
+import ConfettiSwiftUI
 struct mathshowview: View {
     @Binding var ismathshow:Bool
+//    @State private var counter = 0
+    @FocusState var istextFocused:Bool
     @State private var ispresented = false
     @State var btn = "送出答案"
     @State var res = ""
@@ -28,25 +30,31 @@ struct mathshowview: View {
                     Image("R\(mathnum)").resizable().scaledToFill()
                     
                     //輸入答案
-                    TextField("這裡輸入答案", text: $anst).foregroundColor(.red).background(.gray).font(.title).padding()
+                    TextField("這裡輸入答案", text: $anst).foregroundColor(.red).background(.gray).font(.title).padding().focused($istextFocused).onTapGesture {
+                        istextFocused = true
+                    }
                     //檢查答案
                     Button{
                         anst = String.lowercased(anst)()
-                        
+                        istextFocused = false
                         if ansc[mathnum] == anst {
                             mathnum += 1
                             
+//                            counter = 6
                             if mathnum > 6{
                                 btn = ""
                                 res = "答對了，恭喜通過最後一關"
+                                
                             } else {
                                 res = "答對了，請繼續前往下一關"
                             }
                             
                             anst = ""
+                            
                         }else {
                             res = "答案不對，再想想看！"
                             anst = ""
+//                            counter = 0
                         }
                         //顯示訊息匡
                         ispresented = true
@@ -63,7 +71,9 @@ struct mathshowview: View {
         }.alert(isPresented: $ispresented){
             Alert(
                 title: Text(res)
-            )}   //scroll
+            )}
+//        .confettiCannon(counter: $counter, num: 100)
+        //scroll
     }
 }
 

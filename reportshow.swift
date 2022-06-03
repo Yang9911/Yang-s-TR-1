@@ -7,8 +7,11 @@
 
 import SwiftUI
 import AVFoundation
+import ConfettiSwiftUI
 struct reportshow: View {
     let player = AVPlayer()
+//    @State private var counter = 0
+    @FocusState var istextFocused:Bool
     @Binding var isreportshow:Bool
     @State private var ispresented = false
     @State var btn = "送出答案"
@@ -20,63 +23,73 @@ struct reportshow: View {
         ScrollView{
             VStack {
                 
-            //完成第七關
-            if stagenum > 7 {
-                Text("恭喜你，順利逃出去了，不過「重慶」還是讓他跑了，希望下次可以順利抓到重慶，找出他的身分！").foregroundColor(.white)
-            } else {
-                //顯示題目及圖案
-                Text(reptitle[stagenum]).foregroundColor(.white)
-                //第一題播放音效
-                if stagenum == 1 {
-                    Button("播放聲音"){
-                let fileUrl = Bundle.main.url(forResource: "sos", withExtension: "mp4")!
-                                let playerItem = AVPlayerItem(url: fileUrl)
-                                self.player.replaceCurrentItem(with: playerItem)
-                                self.player.play()
-                    }
-                }
-                //顯示題目圖
-            Image("P\(stagenum)").resizable().scaledToFill()
-                //輸入答案
-                TextField("這裡輸入答案", text: $anst).foregroundColor(.red).background(.gray).font(.title).padding()
-                //檢查答案
-                Button{
-                    anst = String.lowercased(anst)()
-                    ispresented = true
-                    if ansc[stagenum] == anst {
-                        stagenum += 1
-                        
-                        if stagenum > 7{
-                        res = "答對了，恭喜你"
-                        btn = ""
-                        }else {
-                            res = "答對了，請選擇下一關"
+                //完成第七關
+                if stagenum > 7 {
+                    Text("恭喜你，順利逃出去了，不過「重慶」還是讓他跑了，希望下次可以順利抓到重慶，找出他的身分！").foregroundColor(.white)
+                } else {
+                    //顯示題目及圖案
+                    Text(reptitle[stagenum]).foregroundColor(.white)
+                    //第一題播放音效
+                    if stagenum == 1 {
+                        Button("播放聲音"){
+                            let fileUrl = Bundle.main.url(forResource: "sos", withExtension: "mp4")!
+                            let playerItem = AVPlayerItem(url: fileUrl)
+                            self.player.replaceCurrentItem(with: playerItem)
+                            self.player.play()
                         }
-                        anst = ""
-                    }else {
-                        res = "答案不對，再想想看！"
-                        anst = ""
                     }
-                    
-                }label: {
-                    Text(btn)
-                }.font(.title)
-                    .background(Color(.white)).foregroundColor(.blue).cornerRadius(20)
-            }
-            
-            
-            
-            
-            //返回
-            Text("按這裡返回").font(.title).padding(.horizontal,6).padding(.vertical,3).foregroundColor(.blue).background(Color(.white)).cornerRadius(20).onTapGesture {
-                isreportshow = false
+                    //顯示題目圖
+                    Image("P\(stagenum)").resizable().scaledToFill()
+                    //輸入答案
+                    TextField("這裡輸入答案", text: $anst).foregroundColor(.red).background(.gray).font(.title).padding().focused($istextFocused).onTapGesture {
+                        istextFocused = true
+                    }
+                    //檢查答案
+                    Button{
+                        anst = String.lowercased(anst)()
+                        istextFocused = false
+                        ispresented = true
+                        if ansc[stagenum] == anst {
+                            stagenum += 1
+                            
+                            if stagenum > 7{
+                                res = "答對了，恭喜你"
+                                btn = ""
+                                
+//                                counter = 6
+                            }else {
+                                res = "答對了，請選擇下一關"
+//                                counter = 5
+                            }
+                            anst = ""
+                        }else {
+                            res = "答案不對，再想想看！"
+                            anst = ""
+//                            counter = 0
+                        }
+                        
+                    }label: {
+                        Text(btn)
+                    }.font(.title)
+                        .background(Color(.white)).foregroundColor(.blue).cornerRadius(20)
+                }
+                
+                
+                
+                
+                //返回
+                Text("按這裡返回").font(.title).padding(.horizontal,6).padding(.vertical,3).foregroundColor(.blue).background(Color(.white)).cornerRadius(20).onTapGesture {
+                    isreportshow = false
                 }
                 
             }
-        }.alert(isPresented: $ispresented){
+        }
+        .alert(isPresented: $ispresented){
             Alert(
                 title: Text(res)
-            )}//scrol
+            )}
+//        .confettiCannon(counter: $counter, num: 100)
+        //scrol
     }
 }
 
